@@ -13,7 +13,7 @@ set $mod Mod4
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
-font pango:monospace 8
+font pango:monospace 11
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
@@ -30,29 +30,56 @@ font pango:monospace 8
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec i3-sensible-terminal
+# bindsym $mod+Return exec i3-sensible-terminal
+bindsym $mod+Return exec sakura
 
 # kill focused window
 bindsym $mod+Shift+q kill
 
 # start dmenu (a program launcher)
-bindsym $mod+Shift+d exec dmenu_run
+bindsym $mod+Shift+d exec --no-startup-id i3-dmenu-desktop
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
-bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
+bindsym $mod+d exec "rofi -show run -config /home/paultsai/.config/rofi/solarized.rasi"
+# bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
+bindsym $mod+g exec "rofi -show window"
+#bindsym $mod+d exec "rofi -show run"
+bindsym $mod+Shift+b exec "rofi -show Workspace"
 
 # change focus
+bindsym $mod+j focus left
+bindsym $mod+k focus down
+bindsym $mod+i focus up
+bindsym $mod+l focus right
+
+# alternatively, you can use the cursor keys:
 bindsym $mod+Left focus left
 bindsym $mod+Down focus down
 bindsym $mod+Up focus up
 bindsym $mod+Right focus right
 
 # move focused window
+bindsym $mod+Shift+j move left
+bindsym $mod+Shift+k move down
+bindsym $mod+Shift+i move up
+bindsym $mod+Shift+l move right
+
+# alternatively, you can use the cursor keys:
 bindsym $mod+Shift+Left move left
 bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
+
+bindsym $mod+Ctrl+Left move workspace to output left
+bindsym $mod+Ctrl+Right move workspace to output right
+bindsym $mod+Ctrl+Up move workspace to output up
+bindsym $mod+Ctrl+Down move workspace to output down
+
+bindsym $mod+Ctrl+j move workspace to output left
+bindsym $mod+Ctrl+k move workspace to output down
+bindsym $mod+Ctrl+i move workspace to output up
+bindsym $mod+Ctrl+l move workspace to output right
 
 # split in horizontal orientation
 bindsym $mod+h split h
@@ -78,7 +105,10 @@ bindsym $mod+space focus mode_toggle
 bindsym $mod+a focus parent
 
 # focus the child container
-#bindsym $mod+d focus child
+# bindsym $mod+d focus child
+
+# Define names for default workspaces for which we configure key bindings later on.
+# We use variables to avoid repeating the names in multiple places.
 
 # switch to workspace
 bindsym $mod+1 workspace 1
@@ -109,20 +139,31 @@ bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
         # These bindings trigger as soon as you enter the resize mode
 
+        # Pressing left will shrink the window’s width.
+        # Pressing right will grow the window’s width.
+        # Pressing up will shrink the window’s height.
+        # Pressing down will grow the window’s height.
+        bindsym j resize shrink width 10 px or 10 ppt
+        bindsym k resize grow height 10 px or 10 ppt
+        bindsym i resize shrink height 10 px or 10 ppt
+        bindsym l resize grow width 10 px or 10 ppt
+
+        # same bindings, but for the arrow keys
         bindsym Left resize shrink width 2 px or 2 ppt
         bindsym Down resize grow height 2 px or 2 ppt
         bindsym Up resize shrink height 2 px or 2 ppt
         bindsym Right resize grow width 2 px or 2 ppt
 
-        # back to normal: Enter or Escape
+        # back to normal: Enter or Escape or $mod+r
         bindsym Return mode "default"
         bindsym Escape mode "default"
+        bindsym $mod+r mode "default"
 }
 
 bindsym $mod+r mode "resize"
@@ -133,43 +174,53 @@ bar {
         status_command i3status
 }
 
-exec --no-startup-id "feh --randomize --bg-scale ~/Pictures/wallpaper"
+exec --no-startup-id env LOCKED_BY_SESSION_IDLE=true xautolock -time 1 -locker cinnamon-screensaver-command --lock
+# Lock screen using i3lock upon suspend
+exec --no-startup-id xss-lock -- cinnamon-screensaver-command --lock 
+bindsym $mod+Shift+Ctrl+l exec cinnamon-screensaver-command --lock
 
-bindsym $mod+l exec --no-startup-id /usr/bin/i3locker.sh
-bindsym $mod+b exec --no-startup-id "feh --randomize --bg-scale ~/Pictures/wallpaper/*"
+exec --no-startup-id "feh --randomize --bg-scale /home/paultsai/Pictures/backgrounds"
+bindsym $mod+b exec --no-startup-id "feh --randomize --bg-scale /home/paultsai/Pictures/backgrounds"
 
-exec --no-startup-id xautolock -time 5 -locker /usr/bin/i3locker.sh
+bindsym XF86MonBrightnessDown exec --no-startup-id /usr/bin/xbacklight -dec 3
+bindsym XF86MonBrightnessUp exec --no-startup-id /usr/bin/xbacklight -inc 3
 
-bindsym $mod+Shift+j move workspace to output left
-bindsym $mod+Shift+k move workspace to output right
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +3% && killall -SIGUSR1 i3status
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -3% && killall -SIGUSR1 i3status
+bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle && killall -SIGUSR1 i3status
 
-floating_minimum_size 75 x 50
-floating_maximum_size 1920x 1080
+# bindsym $mod+Shift+Mod1+j move workspace to output left
+# bindsym $mod+Shift+Mod1+l move workspace to output right
+# bindsym $mod+Shift+Mod1+i move workspace to output up
+# bindsym $mod+Shift+Mod1+k move workspace to output down 
+focus_follows_mouse no
 
-bindsym $mod+c move absolute position center
+# exec --no-startup-id dex -ae i3
 
-# bindsym $mod+Shift+s exec --no-startup-id ~/scripts/monitor.sh
+bindsym $mod+Ctrl+Shift+m exec autorandr --load laptop
+bindsym $mod+Ctrl+Shift+n exec autorandr --load docked
+bindsym $mod+Ctrl+Shift+b exec autorandr --load office
 
-# F9 = XF86Tools
-# bindsym XF86Tools exec system-config-printer #F9
+# for_window [class="(G|g)oogle-chrome"] border none
+# for_window [class="(G|g)oogle-chrome" window_role="pop-up"] floating enable, border normal
 
-# F11 = XF86LaunchA
-# bindsym XF86LaunchA exec sudo systemctl hibernate #F11
+# Load required cinnamon daemons
+# exec --no-startup-id dex --autostart --environment x-cinnamon
+# exec --no-startup-id dex /usr/share/applications/cinnamon-screensaver.desktop
+# exec --no-startup-id pkill orca
+# exec --no-startup-id picom --config ~/.config/compton.conf
+# (sleep 2; nm-applet) &
+# (sleep 2; /usr/share/goobuntu-indicator/goobuntu_indicator.py) &
+# (sleep 2; /usr/bin/glinux-welcome) &
+# gsettings-data-convert &
+# start-pulseaudio-x11 &
 
-# F12 = XF86Explorer
-# bindsym XF86Explorer exec udiskie-umount -a
-#
-# # Pulse Audio controls
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% #decrease sound volume
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
+# exec --no-startup-id (sleep 2; nm-applet) 
+# exec --no-startup-id (sleep 2; /usr/share/goobuntu-indicator/goobuntu_indicator.py) 
+# exec --no-startup-id (sleep 2; /usr/bin/glinux-welcome) 
+# exec --no-startup-id gsettings-data-convert 
+# exec --no-startup-id start-pulseaudio-x11
+# exec --no-startup-id pasystray
 
-# Sreen brightness controls
-bindsym XF86MonBrightnessUp exec xbacklight -inc 3 # increase screen brightness
-bindsym XF86MonBrightnessDown exec xbacklight -dec 3 # decrease screen brightness
-
-# Media player controls
-bindsym XF86AudioPlay exec playerctl play
-bindsym XF86AudioPause exec playerctl pause
-bindsym XF86AudioNext exec playerctl next
-bindsym XF86AudioPrev exec playerctl previous
+# exec dex --autostart --environment x-cinnamon
+# exec dex /usr/share/applications/cinnamon-screensaver.desktop
