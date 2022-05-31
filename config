@@ -182,8 +182,13 @@ bindsym $mod+Shift+Ctrl+l exec cinnamon-screensaver-command --lock
 exec --no-startup-id "feh --randomize --bg-scale /home/paultsai/Pictures/backgrounds"
 bindsym $mod+b exec --no-startup-id "feh --randomize --bg-scale /home/paultsai/Pictures/backgrounds"
 
-bindsym XF86MonBrightnessDown exec --no-startup-id /usr/bin/xbacklight -dec 3
-bindsym XF86MonBrightnessUp exec --no-startup-id /usr/bin/xbacklight -inc 3
+# bindsym XF86MonBrightnessDown exec --no-startup-id /usr/bin/xbacklight -dec 3
+# bindsym XF86MonBrightnessUp exec --no-startup-id /usr/bin/xbacklight -inc 3
+bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +5%
+bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%- 
+bindsym XF86AudioPlay exec playerctl play-pause
+bindsym XF86AudioNext exec playerctl next
+bindsym XF86AudioPrev exec playerctl previous
 
 bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +3% && killall -SIGUSR1 i3status
 bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -3% && killall -SIGUSR1 i3status
