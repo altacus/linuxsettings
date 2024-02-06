@@ -215,14 +215,10 @@ bindsym $mod+Ctrl+Shift+b exec autorandr --load office
 # exec --no-startup-id pkill orca
 # exec --no-startup-id picom --config ~/.config/compton.conf
 # (sleep 2; nm-applet) &
-# (sleep 2; /usr/share/goobuntu-indicator/goobuntu_indicator.py) &
-# (sleep 2; /usr/bin/glinux-welcome) &
 # gsettings-data-convert &
 # start-pulseaudio-x11 &
 
 # exec --no-startup-id (sleep 2; nm-applet) 
-# exec --no-startup-id (sleep 2; /usr/share/goobuntu-indicator/goobuntu_indicator.py) 
-# exec --no-startup-id (sleep 2; /usr/bin/glinux-welcome) 
 # exec --no-startup-id gsettings-data-convert 
 # exec --no-startup-id start-pulseaudio-x11
 # exec --no-startup-id pasystray
